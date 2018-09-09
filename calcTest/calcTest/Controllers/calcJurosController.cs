@@ -12,10 +12,9 @@ namespace calcTest.Controllers
     {
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public ActionResult<decimal> Get()
         {
-            return new string[] { "Valor inicial:" + Models.CalcJuros.valorInicial.ToString(),
-                                  "Valor final:" + Models.CalcJuros.valorFinal.ToString() };
+            return Models.CalcJuros.valorFinal;
         }
 
         // POST api/values
@@ -27,8 +26,12 @@ namespace calcTest.Controllers
                 Models.CalcJuros.valorInicial = valorInicial;
                 Models.CalcJuros.tempoMeses = tempoMeses;
 
-                /*  Valor Final = Valor Inicial * (1 + juros) ^ Tempo */
-                Models.CalcJuros.valorFinal = (Decimal)Math.Pow(Convert.ToDouble(Models.CalcJuros.valorInicial * (1 + (Models.CalcJuros.valorJuros / 100))), Convert.ToDouble(Models.CalcJuros.tempoMeses));
+                if (valorInicial == 0 && tempoMeses == 0)
+                    /* Valor Final -1 indica que parametros são inválidos */
+                    Models.CalcJuros.valorFinal = -1;
+                else
+                    /* Valor Final = Valor Inicial * (1 + juros) ^ Tempo */
+                    Models.CalcJuros.valorFinal = (Decimal)Math.Pow(Convert.ToDouble(Models.CalcJuros.valorInicial * (1 + (Models.CalcJuros.valorJuros / 100))), Convert.ToDouble(Models.CalcJuros.tempoMeses));
 
             }
             catch(Exception e)
